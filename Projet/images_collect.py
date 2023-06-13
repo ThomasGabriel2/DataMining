@@ -94,7 +94,6 @@ dataframe = dataframe.astype(
 dataframe = dataframe.sample(frac=1).reset_index(drop=True)
 
 def download_image(url):
-    print(url)
     headers = {"User-Agent": "Mozilla/5.0"}
     request = requests.get(url, allow_redirects=True, headers=headers, stream=True)
     if request.status_code == 200:
@@ -103,9 +102,10 @@ def download_image(url):
             request.raw.decode_content = True
             shutil.copyfileobj(request.raw, image)
         os.chdir("../Projet")
+        print(os.path.basename(url))
     return os.path.basename(url)
 
 dataframe.to_json("../data_project/data.json")
-dataframe.image.apply(download_image) 
-
+dataframe.image = dataframe.image.apply(download_image) 
+dataframe.to_json("../data_project/data.json")
 print("Done !")
